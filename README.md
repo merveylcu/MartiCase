@@ -4,6 +4,12 @@ Android case study for Martı. The app tracks the user's location, drops a marke
 100 m of movement, keeps tracking in the background, and shows the address of a marker when it's tapped.
 The brief is summarized as R1–R9 below.
 
+<p>
+  <img src="docs/screenshots/tracking.png" width="240" alt="Route with a marker every 100 m" />
+  <img src="docs/screenshots/address.png" width="240" alt="Address of a tapped marker" />
+  <img src="docs/screenshots/reset.png" width="240" alt="Reset route confirmation" />
+</p>
+
 ## Requirements from the brief
 
 | # | Requirement | How |
@@ -92,7 +98,8 @@ Shared Gradle setup lives in `build-logic` as `marticase.*` convention plugins; 
 - Data: route, address and tracking repositories (start failure keeps the flag off).
 - Presentation: `TrackingViewModel` (restore, start/stop, start failure, address states, reset, resume).
 - Manually checked on an Android 16 emulator with simulated GPS: permission chain, markers while in the
-  background, route and tracking restored after force-stop, reset, Stop from the notification.
+  background, marker tap shows the geocoded address, route and tracking restored after force-stop, reset,
+  Stop from the notification.
 
 ## How AI was used
 
