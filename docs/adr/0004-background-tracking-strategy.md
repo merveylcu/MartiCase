@@ -25,7 +25,9 @@ by the system, opening the app resumes the service.
 - Harder: service lifecycle and notification channel to manage; must stop itself on Stop (R4).
 - Accepted limitations: tracking does not restart after a device reboot until the app is opened again.
 - Review notes (`location-reviewer`):
-  - The system's `START_STICKY` restart is best effort. On Android 12+/14+ a location FGS may not start
+  - Observed on an Android 16 emulator: after a process kill the service was restarted in ~1 s and kept
+    recording, with and without the battery exemption (see README "Background behavior").
+  - The system's `START_STICKY` restart is still best effort on real devices. On Android 12+/14+ a location FGS may not start
     from the background; the service then stops quietly, keeps the flag on, and resumes on next app open.
   - The service is started only from visible UI (user tap or screen `STARTED`), never from `init` or
     `Application.onCreate`. A failed start returns `false` and leaves the flag off.

@@ -97,9 +97,25 @@ Shared Gradle setup lives in `build-logic` as `marticase.*` convention plugins; 
 - Domain: the 100 m rule (first fix, < 100 m, ≥ 100 m, distance from last marker not last fix, accuracy limit), haversine distance, address caching.
 - Data: route, address and tracking repositories (start failure keeps the flag off).
 - Presentation: `TrackingViewModel` (restore, start/stop, start failure, address states, reset, resume).
-- Manually checked on an Android 16 emulator with simulated GPS: permission chain, markers while in the
-  background, marker tap shows the geocoded address, route and tracking restored after force-stop, reset,
-  Stop from the notification.
+- Manually checked on an Android 16 emulator with simulated GPS: permission chain, marker tap shows the
+  geocoded address, reset, Stop from the notification.
+
+### Background behavior (Android 16 emulator)
+
+Simulated walk of ~120 m steps with `adb emu geo fix`; markers counted straight from the Room database.
+
+| Scenario | How | Result |
+|---|---|---|
+| App in background | Home button | 3 steps → 3 markers |
+| Screen off + Doze | `dumpsys deviceidle force-idle` | 3 → 3, service stays foreground |
+| Doze without battery exemption | exemption removed, then Doze | 3 → 3 (location FGS isn't throttled by Doze) |
+| Removed from recents | swipe the task away | activity gone, service keeps running, 3 → 3 |
+| Process killed by the system | `kill -9` on the app process | service restarted by `START_STICKY` in ~1 s, 3 → 3, no crash |
+| Same, without battery exemption | exemption removed, `kill -9` | restarted, 3 → 3 |
+| Force stop by the user | `am force-stop` | stops (Android rule); reopening the app resumes tracking, 2 → 2 |
+
+The ongoing notification ("Tracking your route", with Stop) stays visible throughout. OEM battery managers
+can be stricter than stock Android; the battery exemption asked at start is there for those devices.
 
 ## How AI was used
 
