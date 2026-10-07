@@ -1,18 +1,46 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-.kotlin
+# Build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+build/
 **/build/
+mapping/
+/captures
+.externalNativeBuild/
+.cxx/
+obj/
+
+# Gradle / Kotlin
+.gradle/
+.kotlin/
+
+# IDE
+.idea/
+*.iml
+*.iws
+
+# Local config and secrets (MAPS_API_KEY lives in local.properties)
+local.properties
+*.jks
+*.keystore
+*.env
+
+# Claude Code: personal settings and local-only context
+.claude/settings.local.json
 CLAUDE.local.md
+
+# Logs and dumps
+*.log
+*.hprof
+
+# OS
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
