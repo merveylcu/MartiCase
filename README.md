@@ -91,13 +91,24 @@ Shared Gradle setup lives in `build-logic` as `marticase.*` convention plugins; 
 
 ```bash
 ./gradlew testDebugUnitTest :feature:tracking:domain:test
-./gradlew connectedDebugAndroidTest     # DAO test, needs a device
 ./gradlew spotlessCheck detekt lintDebug
 ```
 
-- Domain: the 100 m rule (first fix, < 100 m, ≥ 100 m, distance from last marker not last fix, accuracy limit), haversine distance, address caching.
-- Data: route, address and tracking repositories (start failure keeps the flag off).
-- Presentation: `TrackingViewModel` (restore, start/stop, start failure, address states, reset, resume).
+65 tests, all on the JVM and in CI. Android framework code runs under Robolectric (SDK 34,
+[ADR 0009](docs/adr/0009-robolectric-for-android-tests.md)); no emulator needed.
+
+| Module | Tests | What |
+|---|---|---|
+| `feature:tracking:domain` | 10 | 100 m rule (first fix, < 100 m, ≥ 100 m, from last marker not last fix, accuracy limit), haversine, address caching |
+| `feature:tracking:data` | 23 | Repositories; stale / unknown-accuracy fix filter; service controller; `TrackingService` with Hilt: start, missing permission, Stop action, sticky restart with tracking on/off, location error, database error |
+| `feature:tracking:presentation` | 25 | `TrackingViewModel` (restore, start/stop, start failure, resume, address loading/loaded/unavailable, marker switching, reset, dismiss); Compose UI for controls, status chip, address sheet, reset dialog |
+| `core:database` | 5 | DAO on Room (order, last point, address cache, reset) |
+| `core:datastore` | 2 | Tracking flag default and round trip |
+
+The service tests were mutation-checked: breaking the sticky-restart check or the database-error handling
+makes exactly the matching test fail. Not covered by automated tests: the Google Map itself (can't render
+under Robolectric), the FGS start-failure path on Android 12+/14+ and the permission dialogs — these were
+checked by hand on the emulator.
 - Manually checked on an Android 16 emulator with simulated GPS: permission chain, marker tap shows the
   geocoded address, reset, Stop from the notification.
 
