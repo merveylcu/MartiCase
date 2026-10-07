@@ -71,6 +71,13 @@ gradlePlugin {
                     .pluginId
             implementationClass = "KotlinLintConventionPlugin"
         }
+        register("androidRobolectric") {
+            id =
+                libs.plugins.marticase.android.robolectric
+                    .get()
+                    .pluginId
+            implementationClass = "AndroidRobolectricConventionPlugin"
+        }
         register("testing") {
             id =
                 libs.plugins.marticase.testing

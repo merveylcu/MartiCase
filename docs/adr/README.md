@@ -13,3 +13,4 @@ proposed by the `android-architect` agent and recorded with the `adr` skill.
 | [0006](0006-route-persistence.md) | Room for route points, DataStore for tracking state | Accepted |
 | [0007](0007-core-permission-module.md) | Permission checks and request flow in core:permission | Accepted |
 | [0008](0008-coroutines-module-in-core-common.md) | Coroutine dispatcher and scope bindings in core:common | Accepted |
+| [0009](0009-robolectric-for-android-tests.md) | Robolectric for Android tests on the JVM | Accepted |
