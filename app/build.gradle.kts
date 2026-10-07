@@ -39,6 +39,9 @@ configure<ApplicationExtension> {
 }
 
 dependencies {
+    implementation(projects.core.common)
+    implementation(projects.core.designsystem)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.compose)

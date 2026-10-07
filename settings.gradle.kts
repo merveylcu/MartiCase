@@ -25,3 +25,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "MartiCase"
 include(":app")
+include(":core:common")
+include(":core:designsystem")
+include(":core:testing")
