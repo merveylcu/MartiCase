@@ -153,6 +153,22 @@ errors; the location reviewer found two crash paths in the foreground service (b
 on Android 12/14+, and stopping before `startForeground`) before they were committed — the fixes and the
 resulting limitations are recorded in ADR 0004.
 
+## Performance
+
+Measured on an Android 16 emulator (numbers are relative, not absolute):
+
+| Check | Result |
+|---|---|
+| Compose stability | No unstable parameters; every UI composable is skippable (stability config applied, verified with compiler reports) |
+| 1000-point route, skipped frames at launch | 175 with one `Marker` per point → **71 with clustering** (same as a 10-point route) |
+| Cold start, release (R8) vs debug | ~1.4 s vs ~2.4 s median |
+| Release APK | 1.6 MB |
+| Background location | Batched up to 60 s while the app isn't visible; live while it is — no fixes lost |
+| Returning to the app while tracking | Service isn't restarted (`lastStartId` stays 1) |
+
+Composable cluster content (rendering each marker from Compose to a bitmap) was also tried and measured
+slower (~275 skipped frames), so clusters use the bitmap renderer tinted to the brand colors.
+
 ## Known limitations
 
 - Tracking does not restart after a device reboot until the app is opened (ADR 0004).

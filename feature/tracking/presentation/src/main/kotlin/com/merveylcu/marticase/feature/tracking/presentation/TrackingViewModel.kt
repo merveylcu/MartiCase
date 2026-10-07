@@ -89,7 +89,7 @@ class TrackingViewModel @Inject constructor(
         selection.value = Selection(pointId, AddressState.Loading)
         addressJob?.cancel()
         addressJob = viewModelScope.launch {
-            val point = observeRoute().first().find { it.id == pointId } ?: return@launch
+            val point = uiState.value.points.find { it.id == pointId } ?: return@launch
             val address = getAddress(point)
                 ?.let { AddressState.Loaded(it) }
                 ?: AddressState.Unavailable

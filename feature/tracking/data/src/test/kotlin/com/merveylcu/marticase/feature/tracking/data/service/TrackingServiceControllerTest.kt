@@ -13,7 +13,9 @@ import org.robolectric.Shadows.shadowOf
 @RunWith(AndroidJUnit4::class)
 class TrackingServiceControllerTest {
     private val application = ApplicationProvider.getApplicationContext<Application>()
-    private val controller = TrackingServiceController(application, LocationClient(application))
+    private val serviceState = TrackingServiceState()
+    private val controller =
+        TrackingServiceController(application, LocationClient(application), serviceState)
 
     @Test
     fun start_withoutLocationPermission_returnsFalseAndStartsNothing() {
@@ -28,6 +30,15 @@ class TrackingServiceControllerTest {
         assertThat(controller.start()).isTrue()
         assertThat(shadowOf(application).nextStartedService.component?.className)
             .isEqualTo(TrackingService::class.java.name)
+    }
+
+    @Test
+    fun start_whenServiceIsAlreadyRunning_doesNotStartItAgain() {
+        shadowOf(application).grantPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+        serviceState.isRunning = true
+
+        assertThat(controller.start()).isTrue()
+        assertThat(shadowOf(application).nextStartedService).isNull()
     }
 
     @Test

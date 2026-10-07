@@ -10,9 +10,11 @@ import javax.inject.Inject
 internal class TrackingServiceController @Inject constructor(
     @ApplicationContext private val context: Context,
     private val locationClient: LocationClient,
+    private val serviceState: TrackingServiceState,
 ) {
     fun start(): Boolean {
         if (!locationClient.hasPermission()) return false
+        if (serviceState.isRunning) return true
         return try {
             ContextCompat.startForegroundService(context, serviceIntent())
             true

@@ -39,6 +39,9 @@ internal class TrackingService : Service() {
     lateinit var appVisibility: AppVisibilityMonitor
 
     @Inject
+    lateinit var serviceState: TrackingServiceState
+
+    @Inject
     lateinit var trackingRepository: TrackingRepository
 
     @Inject
@@ -57,6 +60,11 @@ internal class TrackingService : Service() {
         )
     }
     private var updatesJob: Job? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        serviceState.isRunning = true
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -95,6 +103,7 @@ internal class TrackingService : Service() {
     }
 
     override fun onDestroy() {
+        serviceState.isRunning = false
         scope.cancel()
         super.onDestroy()
     }

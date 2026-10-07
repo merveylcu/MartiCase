@@ -44,6 +44,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -94,8 +95,12 @@ class TrackingServiceTest {
     @JvmField
     val addressRepository: AddressRepository = mockk()
 
+    @Inject
+    internal lateinit var serviceState: TrackingServiceState
+
     @Before
     fun setUp() {
+        hiltRule.inject()
         every { locationClient.hasPermission() } returns true
         every { locationClient.locationUpdates(any()) } returns fixes
         every { trackingRepository.isTracking } returns isTracking
@@ -206,6 +211,15 @@ class TrackingServiceTest {
             locationClient.locationUpdates(batched = true)
             locationClient.locationUpdates(batched = false)
         }
+    }
+
+    @Test
+    fun serviceState_followsServiceLifecycle() {
+        val controller = Robolectric.buildService(TrackingService::class.java).create()
+        assertThat(serviceState.isRunning).isTrue()
+
+        controller.destroy()
+        assertThat(serviceState.isRunning).isFalse()
     }
 
     private fun createService(): TrackingService =
