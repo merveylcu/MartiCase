@@ -28,6 +28,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,6 +57,7 @@ class TrackingServiceTest {
     private val testDispatcher = UnconfinedTestDispatcher()
     private val isTracking = MutableStateFlow(true)
     private val fixes = MutableSharedFlow<LocationFix>()
+    private val inForeground = MutableStateFlow(true)
 
     @BindValue
     @JvmField
@@ -78,6 +80,10 @@ class TrackingServiceTest {
 
     @BindValue
     @JvmField
+    internal val appVisibility: AppVisibilityMonitor = mockk()
+
+    @BindValue
+    @JvmField
     val routeRepository: RouteRepository = mockk()
 
     @BindValue
@@ -91,8 +97,9 @@ class TrackingServiceTest {
     @Before
     fun setUp() {
         every { locationClient.hasPermission() } returns true
-        every { locationClient.locationUpdates() } returns fixes
+        every { locationClient.locationUpdates(any()) } returns fixes
         every { trackingRepository.isTracking } returns isTracking
+        every { appVisibility.isInForeground } returns inForeground
         coEvery { trackingRepository.stopTracking() } answers { isTracking.value = false }
         coEvery { routeRepository.lastPoint() } returns null
         coEvery { routeRepository.addPoint(any()) } answers { firstArg<LocationFix>().toPoint() }
@@ -121,7 +128,7 @@ class TrackingServiceTest {
         assertThat(result).isEqualTo(Service.START_NOT_STICKY)
         assertThat(isTracking.value).isFalse()
         assertThat(shadowOf(service).isStoppedBySelf).isTrue()
-        verify(exactly = 0) { locationClient.locationUpdates() }
+        verify(exactly = 0) { locationClient.locationUpdates(any()) }
     }
 
     @Test
@@ -145,7 +152,7 @@ class TrackingServiceTest {
 
         assertThat(result).isEqualTo(Service.START_STICKY)
         assertThat(shadowOf(service).isStoppedBySelf).isTrue()
-        verify(exactly = 0) { locationClient.locationUpdates() }
+        verify(exactly = 0) { locationClient.locationUpdates(any()) }
     }
 
     @Test
@@ -161,7 +168,7 @@ class TrackingServiceTest {
 
     @Test
     fun locationError_turnsTrackingOff() {
-        every { locationClient.locationUpdates() } returns flow { throw SecurityException() }
+        every { locationClient.locationUpdates(any()) } returns flow { throw SecurityException() }
         val service = createService()
 
         service.onStartCommand(startIntent(), 0, 1)
@@ -184,6 +191,21 @@ class TrackingServiceTest {
         assertThat(isTracking.value).isTrue()
         assertThat(shadowOf(service).isStoppedBySelf).isFalse()
         coVerify(exactly = 2) { routeRepository.addPoint(any()) }
+    }
+
+    @Test
+    fun appGoingToBackground_switchesToBatchedUpdates() {
+        val service = createService()
+
+        service.onStartCommand(startIntent(), 0, 1)
+        inForeground.value = false
+        inForeground.value = true
+
+        verifyOrder {
+            locationClient.locationUpdates(batched = false)
+            locationClient.locationUpdates(batched = true)
+            locationClient.locationUpdates(batched = false)
+        }
     }
 
     private fun createService(): TrackingService =

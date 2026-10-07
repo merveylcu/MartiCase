@@ -22,6 +22,7 @@ private const val INTERVAL_MILLIS = 10_000L
 private const val MIN_INTERVAL_MILLIS = 5_000L
 
 private const val MIN_DISTANCE_METERS = 20f
+private const val BACKGROUND_MAX_UPDATE_DELAY_MILLIS = 60_000L
 
 internal class LocationClient @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -33,12 +34,8 @@ internal class LocationClient @Inject constructor(
         Manifest.permission.ACCESS_FINE_LOCATION,
     ) == PackageManager.PERMISSION_GRANTED
 
-    fun locationUpdates(): Flow<LocationFix> = callbackFlow {
-        val request = LocationRequest
-            .Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS)
-            .setMinUpdateIntervalMillis(MIN_INTERVAL_MILLIS)
-            .setMinUpdateDistanceMeters(MIN_DISTANCE_METERS)
-            .build()
+    fun locationUpdates(batched: Boolean): Flow<LocationFix> = callbackFlow {
+        val request = locationRequest(batched)
 
         val callback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
@@ -64,3 +61,10 @@ internal class LocationClient @Inject constructor(
         awaitClose { client.removeLocationUpdates(callback) }
     }
 }
+
+internal fun locationRequest(batched: Boolean): LocationRequest = LocationRequest
+    .Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS)
+    .setMinUpdateIntervalMillis(MIN_INTERVAL_MILLIS)
+    .setMinUpdateDistanceMeters(MIN_DISTANCE_METERS)
+    .setMaxUpdateDelayMillis(if (batched) BACKGROUND_MAX_UPDATE_DELAY_MILLIS else 0L)
+    .build()

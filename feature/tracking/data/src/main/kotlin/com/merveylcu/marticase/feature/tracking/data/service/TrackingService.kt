@@ -16,14 +16,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 internal class TrackingService : Service() {
     @Inject
@@ -31,6 +34,9 @@ internal class TrackingService : Service() {
 
     @Inject
     lateinit var recordLocation: RecordLocationUseCase
+
+    @Inject
+    lateinit var appVisibility: AppVisibilityMonitor
 
     @Inject
     lateinit var trackingRepository: TrackingRepository
@@ -117,8 +123,10 @@ internal class TrackingService : Service() {
     private fun startLocationUpdates() {
         if (updatesJob?.isActive == true) return
         updatesJob = scope.launch {
-            locationClient
-                .locationUpdates()
+            appVisibility.isInForeground
+                .flatMapLatest { inForeground ->
+                    locationClient.locationUpdates(batched = !inForeground)
+                }
                 .catch { stopTracking() }
                 .collect { fix ->
                     try {

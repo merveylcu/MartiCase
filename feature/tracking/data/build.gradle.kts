@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.feature.tracking.domain)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.process)
     implementation(libs.play.services.location)
     implementation(libs.bundles.coroutines)
 

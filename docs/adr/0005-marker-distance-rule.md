@@ -26,3 +26,6 @@ Option 1, as a pure Kotlin use case in `feature:tracking:domain`:
 - Easier: deterministic, unit-testable rule with no Android dependency.
 - Harder: we keep receiving fixes between markers (small battery cost).
 - Accepted limitations: on a winding path markers are 100 m apart in a straight line, not along the path.
+- Update (performance review): while the app is in the background, fixes are delivered in batches of up to
+  60 s to cut wake-ups; every fix is still evaluated, so marker positions don't change. The stale-fix limit
+  moved from 30 s to 2 min so batched fixes aren't dropped.

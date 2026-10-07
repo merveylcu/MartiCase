@@ -79,9 +79,10 @@ Shared Gradle setup lives in `build-logic` as `marticase.*` convention plugins; 
 1. **Start** runs the steps the service needs, in order: precise location → notifications (13+) →
    battery optimization exemption → device location on. Then the service is started from visible UI.
 2. `TrackingService` collects fused location updates (high accuracy, ~10 s, 20 m min distance) and
-   passes each fix to `RecordLocationUseCase`. Stale (> 30 s) and unknown-accuracy fixes are dropped.
+   passes each fix to `RecordLocationUseCase`. While the app isn't visible, fixes are batched (up to 60 s)
+   to save battery. Stale (> 2 min) and unknown-accuracy fixes are dropped.
 3. A marker is saved when the fix is ≥ 100 m from the last marker. The map observes the Room table, so
-   markers appear live, connected by a polyline.
+   markers appear live, connected by a polyline, and clustered when zoomed out.
 4. **Stop** (button or notification) clears the flag and stops the service. **Reset** deletes the points.
 5. If the system kills the process, `START_STICKY` tries to restart the service. Android 12+/14+ may block
    a background restart of a location service; then the flag stays on and tracking resumes the next time
