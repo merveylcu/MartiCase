@@ -14,6 +14,7 @@ class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
                 buildFeatures.compose = true
             }
 
+            configureComposeCompiler()
             configureComposeDependencies()
         }
     }
