@@ -2,6 +2,7 @@ package com.merveylcu.marticase.feature.tracking.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.merveylcu.marticase.core.permission.PermissionBlocker
 import com.merveylcu.marticase.feature.tracking.domain.usecase.GetAddressUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.ObserveRouteUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.ObserveTrackingUseCase
@@ -10,17 +11,15 @@ import com.merveylcu.marticase.feature.tracking.domain.usecase.StartTrackingUseC
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StopTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
 import com.merveylcu.marticase.feature.tracking.presentation.model.SelectedPoint
+import com.merveylcu.marticase.feature.tracking.presentation.model.UserMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,6 +39,7 @@ class TrackingViewModel @Inject constructor(
 
     private val selection = MutableStateFlow<Selection?>(null)
     private val isResetDialogVisible = MutableStateFlow(false)
+    private val userMessage = MutableStateFlow<UserMessage?>(null)
     private var addressJob: Job? = null
 
     val uiState: StateFlow<TrackingUiState> = combine(
@@ -47,7 +47,8 @@ class TrackingViewModel @Inject constructor(
         observeTracking(),
         selection,
         isResetDialogVisible,
-    ) { points, isTracking, selection, isResetDialogVisible ->
+        userMessage,
+    ) { points, isTracking, selection, isResetDialogVisible, userMessage ->
         val selectedIndex = selection?.let { s -> points.indexOfFirst { it.id == s.pointId } } ?: -1
         TrackingUiState(
             points = points.toImmutableList(),
@@ -60,6 +61,7 @@ class TrackingViewModel @Inject constructor(
                 )
             },
             isResetDialogVisible = isResetDialogVisible,
+            userMessage = userMessage,
         )
     }.stateIn(
         viewModelScope,
@@ -67,13 +69,21 @@ class TrackingViewModel @Inject constructor(
         TrackingUiState(),
     )
 
-    private val effectChannel = Channel<TrackingUiEffect>(Channel.BUFFERED)
-    val effects: Flow<TrackingUiEffect> = effectChannel.receiveAsFlow()
-
     fun onStartTracking() {
         viewModelScope.launch {
-            if (!startTracking()) effectChannel.send(TrackingUiEffect.StartFailed)
+            if (!startTracking()) userMessage.value = UserMessage.StartFailed
         }
+    }
+
+    fun onStartBlocked(blocker: PermissionBlocker) {
+        userMessage.value = when (blocker) {
+            PermissionBlocker.PreciseLocationDenied -> UserMessage.PreciseLocationRequired
+            PermissionBlocker.LocationDisabled -> UserMessage.LocationDisabled
+        }
+    }
+
+    fun onUserMessageShown() {
+        userMessage.value = null
     }
 
     fun onStopTracking() {

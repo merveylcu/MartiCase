@@ -17,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,14 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.merveylcu.marticase.core.designsystem.component.MartiSnackbarHost
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
-import com.merveylcu.marticase.core.permission.PermissionBlocker
 import com.merveylcu.marticase.core.permission.hasFineLocationPermission
 import com.merveylcu.marticase.core.permission.rememberLocationTrackingPermissionFlow
 import com.merveylcu.marticase.feature.tracking.presentation.compose.PointDetailSheet
@@ -40,33 +35,21 @@ import com.merveylcu.marticase.feature.tracking.presentation.compose.ResetRouteD
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingControls
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingMap
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingStatusChip
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import com.merveylcu.marticase.feature.tracking.presentation.model.UserMessage
 
 @Composable
 fun TrackingScreen(modifier: Modifier = Modifier, viewModel: TrackingViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var hasLocationPermission by remember { mutableStateOf(context.hasFineLocationPermission()) }
-
-    val startFailedMessage = stringResource(R.string.error_start_failed)
-    val preciseLocationMessage = stringResource(R.string.error_precise_location_required)
-    val locationDisabledMessage = stringResource(R.string.error_location_disabled)
 
     val startTrackingFlow = rememberLocationTrackingPermissionFlow(
         onReady = {
             hasLocationPermission = true
             viewModel.onStartTracking()
         },
-        onBlock = { blocker ->
-            val message = when (blocker) {
-                PermissionBlocker.PreciseLocationDenied -> preciseLocationMessage
-                PermissionBlocker.LocationDisabled -> locationDisabledMessage
-            }
-            scope.launch { snackbarHostState.showSnackbar(message) }
-        },
+        onBlock = viewModel::onStartBlocked,
     )
 
     LifecycleStartEffect(viewModel) {
@@ -75,11 +58,11 @@ fun TrackingScreen(modifier: Modifier = Modifier, viewModel: TrackingViewModel =
         onStopOrDispose { }
     }
 
-    TrackingEffects(viewModel.effects) { effect ->
-        when (effect) {
-            TrackingUiEffect.StartFailed -> snackbarHostState.showSnackbar(startFailedMessage)
-        }
-    }
+    UserMessageSnackbar(
+        message = state.userMessage,
+        snackbarHostState = snackbarHostState,
+        onShow = viewModel::onUserMessageShown,
+    )
 
     TrackingContent(
         state = state,
@@ -97,18 +80,27 @@ fun TrackingScreen(modifier: Modifier = Modifier, viewModel: TrackingViewModel =
 }
 
 @Composable
-private fun TrackingEffects(
-    effects: Flow<TrackingUiEffect>,
-    onEffect: suspend (TrackingUiEffect) -> Unit,
+private fun UserMessageSnackbar(
+    message: UserMessage?,
+    snackbarHostState: SnackbarHostState,
+    onShow: () -> Unit,
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val currentOnEffect by rememberUpdatedState(onEffect)
-    LaunchedEffect(effects, lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            effects.collect { currentOnEffect(it) }
+    val text = message?.let { stringResource(it.textRes) }
+    val currentOnShow by rememberUpdatedState(onShow)
+    LaunchedEffect(message) {
+        if (text != null) {
+            snackbarHostState.showSnackbar(text)
+            currentOnShow()
         }
     }
 }
+
+private val UserMessage.textRes: Int
+    get() = when (this) {
+        UserMessage.StartFailed -> R.string.error_start_failed
+        UserMessage.PreciseLocationRequired -> R.string.error_precise_location_required
+        UserMessage.LocationDisabled -> R.string.error_location_disabled
+    }
 
 @Composable
 internal fun TrackingContent(

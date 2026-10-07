@@ -2,6 +2,7 @@ package com.merveylcu.marticase.feature.tracking.presentation
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import com.merveylcu.marticase.core.permission.PermissionBlocker
 import com.merveylcu.marticase.core.testing.MainDispatcherRule
 import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.LocationFix
@@ -16,6 +17,7 @@ import com.merveylcu.marticase.feature.tracking.domain.usecase.ResetRouteUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StartTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StopTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
+import com.merveylcu.marticase.feature.tracking.presentation.model.UserMessage
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,13 +63,38 @@ class TrackingViewModelTest {
     }
 
     @Test
-    fun startTracking_whenServiceFails_emitsStartFailed() = runTest {
+    fun startTracking_whenServiceFails_showsStartFailedMessage() = runTest {
         trackingRepository.canStart = false
 
-        viewModel.effects.test {
+        viewModel.uiState.test {
             viewModel.onStartTracking()
 
-            assertThat(awaitItem()).isEqualTo(TrackingUiEffect.StartFailed)
+            assertThat(expectMostRecentItem().userMessage).isEqualTo(UserMessage.StartFailed)
+        }
+    }
+
+    @Test
+    fun startBlocked_mapsToUserMessage() = runTest {
+        viewModel.uiState.test {
+            viewModel.onStartBlocked(PermissionBlocker.PreciseLocationDenied)
+            assertThat(
+                expectMostRecentItem().userMessage,
+            ).isEqualTo(UserMessage.PreciseLocationRequired)
+
+            viewModel.onStartBlocked(PermissionBlocker.LocationDisabled)
+            assertThat(expectMostRecentItem().userMessage).isEqualTo(UserMessage.LocationDisabled)
+        }
+    }
+
+    @Test
+    fun userMessageShown_clearsMessage() = runTest {
+        trackingRepository.canStart = false
+
+        viewModel.uiState.test {
+            viewModel.onStartTracking()
+            viewModel.onUserMessageShown()
+
+            assertThat(expectMostRecentItem().userMessage).isNull()
         }
     }
 

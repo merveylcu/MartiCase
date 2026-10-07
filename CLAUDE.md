@@ -56,7 +56,8 @@ Take patterns from them; do **not** copy features that the brief doesn't need. K
 
 ### MVVM / Compose
 - One immutable `UiState` data class per screen, exposed as `StateFlow`.
-- One-off events as `Channel`/`SharedFlow` effects. No event-wrapper hacks.
+- One-off events are part of the `UiState` (e.g. `userMessage`) and the UI clears them after handling
+  (`onUserMessageShown()`). Don't use `Channel`.
 - Collect flows with `collectAsStateWithLifecycle` only.
 - No business logic or state mutation inside composables. Side effects via `LaunchedEffect`/`DisposableEffect`.
 - Use `kotlinx.collections.immutable` for lists in UI state. Stable keys in lazy lists.

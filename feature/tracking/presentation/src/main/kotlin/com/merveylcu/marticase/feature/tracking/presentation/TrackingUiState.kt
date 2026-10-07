@@ -3,6 +3,7 @@ package com.merveylcu.marticase.feature.tracking.presentation
 import androidx.compose.runtime.Immutable
 import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
 import com.merveylcu.marticase.feature.tracking.presentation.model.SelectedPoint
+import com.merveylcu.marticase.feature.tracking.presentation.model.UserMessage
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -12,4 +13,5 @@ data class TrackingUiState(
     val isTracking: Boolean = false,
     val selectedPoint: SelectedPoint? = null,
     val isResetDialogVisible: Boolean = false,
+    val userMessage: UserMessage? = null,
 )
