@@ -3,29 +3,36 @@ package com.merveylcu.marticase.feature.tracking.presentation.compose
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.clustering.Clustering
+import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.launch
 
 private val DefaultTarget = LatLng(41.0082, 28.9784)
 private const val DEFAULT_ZOOM = 11f
 private const val FOLLOW_ZOOM = 16f
 private const val ROUTE_WIDTH = 12f
+private const val CLUSTER_ZOOM_STEP = 2f
 
 @Composable
 internal fun TrackingMap(
@@ -41,6 +48,7 @@ internal fun TrackingMap(
             if (points.isEmpty()) DEFAULT_ZOOM else FOLLOW_ZOOM,
         )
     }
+    val scope = rememberCoroutineScope()
     val lastPoint = points.lastOrNull()
     LaunchedEffect(lastPoint?.id) {
         lastPoint?.let {
@@ -57,25 +65,53 @@ internal fun TrackingMap(
         properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
         uiSettings = MapUiSettings(zoomControlsEnabled = false, mapToolbarEnabled = false),
     ) {
-        val markerIcon =
-            remember { BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN) }
         val route = remember(points) { points.map { it.coordinate.toLatLng() } }
+        val items = remember(points) { points.map(::RoutePointItem) }
         if (route.size > 1) {
             Polyline(points = route, color = MartiCaseTheme.colors.primary, width = ROUTE_WIDTH)
         }
-        points.forEach { point ->
-            key(point.id) {
-                Marker(
-                    state = rememberUpdatedMarkerState(point.coordinate.toLatLng()),
-                    icon = markerIcon,
-                    onClick = {
-                        onMarkerClick(point.id)
-                        true
-                    },
-                )
-            }
-        }
+        RouteClustering(
+            items = items,
+            onClusterClick = { position ->
+                scope.launch {
+                    cameraState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            position,
+                            cameraState.position.zoom + CLUSTER_ZOOM_STEP,
+                        ),
+                    )
+                }
+            },
+            onItemClick = onMarkerClick,
+        )
     }
 }
 
 private fun Coordinate.toLatLng() = LatLng(latitude, longitude)
+
+@OptIn(MapsComposeExperimentalApi::class)
+@Composable
+private fun RouteClustering(
+    items: List<RoutePointItem>,
+    onClusterClick: (LatLng) -> Unit,
+    onItemClick: (Long) -> Unit,
+) {
+    val context = LocalContext.current
+    val clusterColor = MartiCaseTheme.colors.primary.toArgb()
+    val currentOnClusterClick by rememberUpdatedState(onClusterClick)
+    val currentOnItemClick by rememberUpdatedState(onItemClick)
+    val clusterManager = rememberClusterManager<RoutePointItem>() ?: return
+
+    MapEffect(clusterManager, clusterColor) { map ->
+        clusterManager.renderer = RouteClusterRenderer(context, map, clusterManager, clusterColor)
+        clusterManager.setOnClusterClickListener { cluster ->
+            currentOnClusterClick(cluster.position)
+            true
+        }
+        clusterManager.setOnClusterItemClickListener { item ->
+            currentOnItemClick(item.id)
+            true
+        }
+    }
+    Clustering(items = items, clusterManager = clusterManager)
+}

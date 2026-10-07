@@ -77,6 +77,7 @@ androidx-datastore-preferences      = { group = "androidx.datastore", name = "da
 
 play-services-location              = { group = "com.google.android.gms",    name = "play-services-location",            version.ref = "playServicesLocation" }
 maps-compose                        = { group = "com.google.maps.android",   name = "maps-compose",                      version.ref = "mapsCompose" }
+maps-compose-utils                  = { group = "com.google.maps.android",   name = "maps-compose-utils",                version.ref = "mapsCompose" }
 
 kotlinx-coroutines-android          = { group = "org.jetbrains.kotlinx",     name = "kotlinx-coroutines-android",        version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core             = { group = "org.jetbrains.kotlinx",     name = "kotlinx-coroutines-core",           version.ref = "kotlinxCoroutines" }

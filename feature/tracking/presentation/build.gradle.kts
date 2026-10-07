@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.maps.compose)
+    implementation(libs.maps.compose.utils)
 
     testImplementation(projects.core.testing)
     testImplementation(libs.androidx.compose.ui.test.junit4)
