@@ -3,6 +3,7 @@ import com.android.build.api.dsl.LibraryExtension
 plugins {
     alias(libs.plugins.marticase.android.library.compose)
     alias(libs.plugins.marticase.android.hilt)
+    alias(libs.plugins.marticase.android.robolectric)
     alias(libs.plugins.marticase.testing)
 }
 
@@ -25,5 +26,8 @@ dependencies {
     implementation(libs.maps.compose)
 
     testImplementation(projects.core.testing)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.truth)
+
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
