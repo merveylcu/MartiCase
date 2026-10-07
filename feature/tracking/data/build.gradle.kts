@@ -21,5 +21,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.bundles.coroutines)
 
+    testImplementation(libs.hilt.android.testing)
     testImplementation(libs.truth)
+    kspTest(libs.hilt.android.compiler)
 }
