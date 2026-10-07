@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+
+    <issue id="GoogleAppIndexingWarning"     severity="ignore" />
+    <issue id="AllowBackup"                  severity="ignore" />
+    <issue id="GradleDependency"             severity="ignore" />
+    <issue id="NewerVersionAvailable"        severity="ignore" />
+    <issue id="AndroidGradlePluginVersion"   severity="ignore" />
+
+    <issue id="SetJavaScriptEnabled"         severity="error" />
+    <issue id="HardcodedDebugMode"           severity="error" />
+    <issue id="UnsafeImplicitIntentLaunch"   severity="error" />
+
+    <issue id="ContentDescription"           severity="error" />
+    <issue id="LabelFor"                     severity="error" />
+
+    <issue id="WrongConstant"                severity="error" />
+    <issue id="InvalidUsesTagAttribute"      severity="error" />
+
+    <issue id="DrawAllocation"               severity="error" />
+    <issue id="ViewHolder"                   severity="error" />
+    <issue id="VectorPath"                   severity="ignore" />
+
+    <issue id="HardcodedText"                severity="error" />
+</lint>
