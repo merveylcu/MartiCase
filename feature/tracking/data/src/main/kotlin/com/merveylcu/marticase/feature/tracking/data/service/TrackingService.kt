@@ -26,11 +26,14 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class TrackingService : Service() {
-    @Inject lateinit var locationClient: LocationClient
+    @Inject
+    lateinit var locationClient: LocationClient
 
-    @Inject lateinit var recordLocation: RecordLocationUseCase
+    @Inject
+    lateinit var recordLocation: RecordLocationUseCase
 
-    @Inject lateinit var trackingRepository: TrackingRepository
+    @Inject
+    lateinit var trackingRepository: TrackingRepository
 
     @Inject
     @DefaultDispatcher

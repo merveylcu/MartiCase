@@ -36,8 +36,6 @@ class TrackingViewModel @Inject constructor(
     private val getAddress: GetAddressUseCase,
 ) : ViewModel() {
 
-    private data class Selection(val pointId: Long, val address: AddressState)
-
     private val selection = MutableStateFlow<Selection?>(null)
     private val isResetDialogVisible = MutableStateFlow(false)
     private var addressJob: Job? = null
@@ -54,7 +52,7 @@ class TrackingViewModel @Inject constructor(
             isTracking = isTracking,
             selectedPoint = selection?.takeIf { selectedIndex >= 0 }?.let {
                 SelectedPoint(
-                    points[selectedIndex],
+                    point = points[selectedIndex],
                     order = selectedIndex + 1,
                     address = it.address,
                 )
@@ -119,4 +117,6 @@ class TrackingViewModel @Inject constructor(
         onPointDismiss()
         viewModelScope.launch { resetRoute() }
     }
+
+    private data class Selection(val pointId: Long, val address: AddressState)
 }

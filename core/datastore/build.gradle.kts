@@ -10,7 +10,8 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    api(libs.androidx.datastore.preferences)
     implementation(projects.core.common)
+
+    api(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
 }

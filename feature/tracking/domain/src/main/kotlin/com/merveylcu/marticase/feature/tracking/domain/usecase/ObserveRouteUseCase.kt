@@ -5,8 +5,6 @@ import com.merveylcu.marticase.feature.tracking.domain.repository.RouteRepositor
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-public class ObserveRouteUseCase
-@Inject
-constructor(private val repository: RouteRepository) {
+public class ObserveRouteUseCase @Inject constructor(private val repository: RouteRepository) {
     public operator fun invoke(): Flow<List<RoutePoint>> = repository.observeRoute()
 }

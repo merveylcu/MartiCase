@@ -11,10 +11,10 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(projects.feature.tracking.domain)
     implementation(projects.core.common)
     implementation(projects.core.database)
     implementation(projects.core.datastore)
+    implementation(projects.feature.tracking.domain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.play.services.location)

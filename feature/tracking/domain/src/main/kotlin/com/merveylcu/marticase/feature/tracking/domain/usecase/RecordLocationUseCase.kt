@@ -5,9 +5,7 @@ import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
 import com.merveylcu.marticase.feature.tracking.domain.repository.RouteRepository
 import javax.inject.Inject
 
-public class RecordLocationUseCase
-@Inject
-constructor(private val repository: RouteRepository) {
+public class RecordLocationUseCase @Inject constructor(private val repository: RouteRepository) {
     public suspend operator fun invoke(fix: LocationFix): RoutePoint? {
         if (fix.accuracyMeters > MAX_ACCURACY_METERS) return null
 

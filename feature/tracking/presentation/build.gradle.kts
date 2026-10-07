@@ -11,9 +11,9 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(projects.feature.tracking.domain)
     implementation(projects.core.designsystem)
     implementation(projects.core.permission)
+    implementation(projects.feature.tracking.domain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
