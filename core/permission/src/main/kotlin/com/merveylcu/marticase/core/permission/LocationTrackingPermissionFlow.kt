@@ -14,11 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 
 private typealias Step = () -> Unit
 
-/**
- * Runs the steps needed before tracking can start, in the order the service needs them:
- * precise location -> notifications (13+) -> battery exemption -> device location on.
- * Returns a function that starts the chain.
- */
 @Composable
 fun rememberLocationTrackingPermissionFlow(
     onReady: () -> Unit,
@@ -45,7 +40,6 @@ private fun rememberLocationPermissionStep(next: Step, onDeny: () -> Unit): Step
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { result ->
-        // Coarse-only fixes can't pass the 50 m accuracy filter (ADR 0005).
         if (result[Manifest.permission.ACCESS_FINE_LOCATION] == true) next() else onDeny()
     }
     return {
@@ -62,7 +56,6 @@ private fun rememberLocationPermissionStep(next: Step, onDeny: () -> Unit): Step
     }
 }
 
-// Tracking still works without this permission; the notification is just hidden.
 @Composable
 private fun rememberNotificationStep(next: Step): Step {
     val launcher = rememberLauncherForActivityResult(
@@ -77,7 +70,6 @@ private fun rememberNotificationStep(next: Step): Step {
     }
 }
 
-// Asked once per screen so a "no" isn't repeated on every start.
 @Composable
 private fun rememberBatteryStep(next: Step): Step {
     val context = LocalContext.current

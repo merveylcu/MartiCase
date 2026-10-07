@@ -24,7 +24,6 @@ fun Context.isLocationEnabled(): Boolean {
 fun Context.isIgnoringBatteryOptimizations(): Boolean =
     getSystemService(PowerManager::class.java)?.isIgnoringBatteryOptimizations(packageName) ?: true
 
-// ADR 0004: the exemption lets tracking keep running in Doze.
 @SuppressLint("BatteryLife")
 fun Context.batteryOptimizationIntent(): Intent =
     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, "package:$packageName".toUri())

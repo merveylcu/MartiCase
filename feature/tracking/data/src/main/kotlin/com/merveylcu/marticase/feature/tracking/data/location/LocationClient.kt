@@ -22,13 +22,10 @@ import javax.inject.Inject
 private const val INTERVAL_MILLIS = 10_000L
 private const val MIN_INTERVAL_MILLIS = 5_000L
 
-// Cached fixes delivered after a restart can be minutes old; they would place a wrong marker.
 private const val MAX_FIX_AGE_NANOS = 30_000_000_000L
 
-// Below the 100 m marker distance so crossing it is noticed promptly (ADR 0005).
 private const val MIN_DISTANCE_METERS = 20f
 
-/** Fused location updates as a cold [Flow]. Updates stop when collection is cancelled. */
 internal class LocationClient @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
@@ -55,7 +52,6 @@ internal class LocationClient @Inject constructor(
                         trySend(
                             LocationFix(
                                 coordinate = Coordinate(location.latitude, location.longitude),
-                                // No accuracy means unknown quality: let the domain filter drop it.
                                 accuracyMeters = if (location.hasAccuracy()) {
                                     location.accuracy
                                 } else {

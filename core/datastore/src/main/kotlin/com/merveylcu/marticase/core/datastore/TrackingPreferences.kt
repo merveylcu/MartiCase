@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Whether the user has tracking turned on. Survives process death (ADR 0004, 0006). */
 @Singleton
 public class TrackingPreferences @Inject constructor(
     private val dataStore: DataStore<Preferences>,

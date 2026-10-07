@@ -29,7 +29,6 @@ class TrackingViewModelTest {
     private val trackingRepository = FakeTrackingRepository()
     private val addressRepository = FakeAddressRepository()
 
-    // Created lazily so viewModelScope picks up the test Main dispatcher set by the rule.
     private val viewModel by lazy {
         TrackingViewModel(
             observeRoute = ObserveRouteUseCase(routeRepository),

@@ -1,4 +1,3 @@
-# Build outputs
 *.apk
 *.aab
 *.ap_
@@ -15,35 +14,28 @@ mapping/
 .cxx/
 obj/
 
-# Gradle / Kotlin
 .gradle/
 .kotlin/
 
-# IDE
 .idea/
 *.iml
 *.iws
 
-# Local config and secrets (MAPS_API_KEY lives in local.properties)
 local.properties
 *.jks
 *.keystore
 *.env
 
-# Claude Code: personal settings and local-only context
 .claude/settings.local.json
 CLAUDE.local.md
 
-# Logs and dumps
 *.log
 *.hprof
 
-# OS
 .DS_Store
 .DS_Store?
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Case brief from Marti (kept locally, not published)
 /doc/

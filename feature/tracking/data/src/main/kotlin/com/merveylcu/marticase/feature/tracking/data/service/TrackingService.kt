@@ -24,10 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Location foreground service (ADR 0004). Records a marker every 100 m through
- * [RecordLocationUseCase] and keeps running until the user stops tracking.
- */
 @AndroidEntryPoint
 internal class TrackingService : Service() {
     @Inject lateinit var locationClient: LocationClient
@@ -40,7 +36,6 @@ internal class TrackingService : Service() {
     @DefaultDispatcher
     lateinit var dispatcher: CoroutineDispatcher
 
-    // Outlives the service, so writes like "tracking off" aren't cancelled by onDestroy.
     @Inject
     @ApplicationScope
     lateinit var applicationScope: CoroutineScope
@@ -65,9 +60,7 @@ internal class TrackingService : Service() {
             stopTracking()
             return START_NOT_STICKY
         }
-        // Call startForeground before any early stop, or startForegroundService() crashes.
         if (!startInForeground()) {
-            // Not allowed from the background (12+/14+). Keep the flag: opening the app resumes.
             stopSelf(startId)
             return START_NOT_STICKY
         }
@@ -77,7 +70,6 @@ internal class TrackingService : Service() {
         }
 
         if (intent == null) {
-            // START_STICKY restart: only continue if the user still wants tracking.
             scope.launch {
                 if (trackingRepository.isTracking.first()) {
                     startLocationUpdates()
@@ -129,7 +121,6 @@ internal class TrackingService : Service() {
                     try {
                         recordLocation(fix)
                     } catch (_: SQLiteException) {
-                        // Skip this fix; the next one is a few seconds away.
                     }
                 }
         }

@@ -70,7 +70,6 @@ class TrackingViewModel @Inject constructor(
     private val effectChannel = Channel<TrackingUiEffect>(Channel.BUFFERED)
     val effects: Flow<TrackingUiEffect> = effectChannel.receiveAsFlow()
 
-    /** Called by the screen once permissions and location settings are in place. */
     fun onStartTracking() {
         viewModelScope.launch {
             if (!startTracking()) effectChannel.send(TrackingUiEffect.StartFailed)
@@ -81,10 +80,6 @@ class TrackingViewModel @Inject constructor(
         viewModelScope.launch { stopTracking() }
     }
 
-    /**
-     * The screen became visible. If tracking was on but the service was killed, resume it
-     * (ADR 0004). The service can only be started from visible UI, so this is the place.
-     */
     fun onScreenStarted(hasLocationPermission: Boolean) {
         viewModelScope.launch {
             if (!observeTracking().first()) return@launch

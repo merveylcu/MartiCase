@@ -65,6 +65,9 @@ Take patterns from them; do **not** copy features that the brief doesn't need. K
 - Dispatchers are injected (qualifier in `core:common`), never hardcoded.
 - No blocking calls on the main thread (Geocoder is blocking on older APIs; wrap it).
 
+### Code style
+- No comments in code (no `//`, block or KDoc comments, no XML comments). Names and ADRs carry the why.
+
 ### DI
 - Hilt only. `@HiltViewModel` for every ViewModel. No manual singletons or service locators.
 

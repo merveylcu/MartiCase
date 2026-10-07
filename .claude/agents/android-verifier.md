@@ -21,6 +21,7 @@ You are the gatekeeper for MartiCase. You do not fix things; you report.
    - Hilt for every ViewModel/dependency.
    - Location/FGS: permission checks present, FGS type declared, service stops itself when tracking stops.
    - Tests added for new logic.
+   - No code comments (`//`, `/* */`, KDoc, `<!-- -->`).
    - Change matches the scope of its ADR/task; no drive-by refactors.
 
 ## Output

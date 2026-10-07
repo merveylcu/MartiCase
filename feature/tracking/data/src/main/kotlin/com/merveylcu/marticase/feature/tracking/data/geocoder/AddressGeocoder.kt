@@ -15,7 +15,6 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-/** Reverse geocodes with the platform [Geocoder]. Returns null when no address is available. */
 internal class AddressGeocoder @Inject constructor(
     @ApplicationContext context: Context,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
@@ -51,7 +50,6 @@ internal class AddressGeocoder @Inject constructor(
             )
         }
 
-    // The blocking overload is the only option below API 33, so it runs on the IO dispatcher.
     @Suppress("DEPRECATION")
     private suspend fun geocodeBlocking(coordinate: Coordinate): Address? =
         withContext(ioDispatcher) {

@@ -69,7 +69,6 @@ fun TrackingScreen(modifier: Modifier = Modifier, viewModel: TrackingViewModel =
         },
     )
 
-    // Re-check on every return: the user may have changed permissions in Settings.
     LifecycleStartEffect(viewModel) {
         hasLocationPermission = context.hasFineLocationPermission()
         viewModel.onScreenStarted(hasLocationPermission)

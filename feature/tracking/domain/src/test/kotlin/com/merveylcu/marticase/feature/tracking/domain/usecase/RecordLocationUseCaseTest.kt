@@ -6,7 +6,6 @@ import com.merveylcu.marticase.feature.tracking.domain.model.LocationFix
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-// 0.0009 degrees of latitude is about 100.1 m, 0.0008 is about 89 m.
 private const val START_LAT = 41.0
 private const val LON = 29.0
 
@@ -44,8 +43,6 @@ class RecordLocationUseCaseTest {
     @Test
     fun distanceIsMeasuredFromLastMarker_notFromLastFix() = runTest {
         recordLocation(fix(START_LAT))
-        // Two 50 m steps: neither is 100 m from the previous fix,
-        // but the second one is 100 m from the marker.
         recordLocation(fix(START_LAT + 0.00045))
         recordLocation(fix(START_LAT + 0.0009))
 

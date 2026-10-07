@@ -17,6 +17,7 @@ You implement small, focused changes in MartiCase.
 - Domain is pure Kotlin. Android APIs only in `data`/`platform` code.
 - Immutable `UiState`, `StateFlow`, injected dispatchers, Hilt, no deprecated APIs.
 - Add or update the unit tests that cover the change.
+- Don't write code comments; explain decisions in ADRs instead.
 
 ## Done when
 - `./gradlew assembleDebug testDebugUnitTest` passes for the touched modules.

@@ -5,10 +5,6 @@ import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
 import com.merveylcu.marticase.feature.tracking.domain.repository.RouteRepository
 import javax.inject.Inject
 
-/**
- * Adds a marker when the user has moved [MARKER_DISTANCE_METERS] from the last marker (ADR 0005).
- * Returns the new marker, or null if the fix was ignored.
- */
 public class RecordLocationUseCase
 @Inject
 constructor(private val repository: RouteRepository) {

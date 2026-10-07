@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 
-/** Elevated container that floats over the map. */
 @Composable
 fun MartiSurface(
     modifier: Modifier = Modifier,

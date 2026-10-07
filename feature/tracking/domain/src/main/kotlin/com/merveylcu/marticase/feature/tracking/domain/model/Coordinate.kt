@@ -9,7 +9,6 @@ import kotlin.math.sqrt
 private const val EARTH_RADIUS_METERS = 6_371_000.0
 
 public data class Coordinate(val latitude: Double, val longitude: Double) {
-    /** Great-circle (haversine) distance in meters. */
     public fun distanceTo(other: Coordinate): Double {
         val lat1 = Math.toRadians(latitude)
         val lat2 = Math.toRadians(other.latitude)
