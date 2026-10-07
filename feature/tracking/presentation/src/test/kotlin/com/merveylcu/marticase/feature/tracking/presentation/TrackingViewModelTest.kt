@@ -15,6 +15,7 @@ import com.merveylcu.marticase.feature.tracking.domain.usecase.ObserveTrackingUs
 import com.merveylcu.marticase.feature.tracking.domain.usecase.ResetRouteUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StartTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StopTrackingUseCase
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -132,6 +133,111 @@ class TrackingViewModelTest {
         assertThat(trackingRepository.startCalls).isEqualTo(0)
     }
 
+    @Test
+    fun stopTracking_updatesState() = runTest {
+        trackingRepository.isTracking.value = true
+
+        viewModel.uiState.test {
+            viewModel.onStopTracking()
+
+            assertThat(expectMostRecentItem().isTracking).isFalse()
+        }
+    }
+
+    @Test
+    fun screenStarted_whenTrackingIsOff_doesNotStart() = runTest {
+        viewModel.onScreenStarted(hasLocationPermission = true)
+
+        assertThat(trackingRepository.startCalls).isEqualTo(0)
+    }
+
+    @Test
+    fun markerClick_showsLoadingUntilAddressArrives() = runTest {
+        routeRepository.points.value = listOf(point(1))
+        val pending = CompletableDeferred<String?>()
+        addressRepository.pending = pending
+
+        viewModel.uiState.test {
+            viewModel.onMarkerClick(1L)
+            assertThat(
+                expectMostRecentItem().selectedPoint?.address,
+            ).isEqualTo(AddressState.Loading)
+
+            pending.complete("Moda, Kadıköy")
+            assertThat(
+                awaitItem().selectedPoint?.address,
+            ).isEqualTo(AddressState.Loaded("Moda, Kadıköy"))
+        }
+    }
+
+    @Test
+    fun markerClick_whileAnotherAddressLoads_showsLatestMarker() = runTest {
+        routeRepository.points.value = listOf(point(1), point(2))
+        addressRepository.pending = CompletableDeferred()
+
+        viewModel.uiState.test {
+            viewModel.onMarkerClick(1L)
+            addressRepository.pending = null
+            addressRepository.address = "Moda, Kadıköy"
+            viewModel.onMarkerClick(2L)
+
+            val selected = expectMostRecentItem().selectedPoint
+            assertThat(selected?.point?.id).isEqualTo(2L)
+            assertThat(selected?.address).isEqualTo(AddressState.Loaded("Moda, Kadıköy"))
+        }
+    }
+
+    @Test
+    fun pointDismiss_closesSheet() = runTest {
+        routeRepository.points.value = listOf(point(1))
+
+        viewModel.uiState.test {
+            viewModel.onMarkerClick(1L)
+            viewModel.onPointDismiss()
+
+            assertThat(expectMostRecentItem().selectedPoint).isNull()
+        }
+    }
+
+    @Test
+    fun selectedPoint_removedFromRoute_closesSheet() = runTest {
+        routeRepository.points.value = listOf(point(1))
+
+        viewModel.uiState.test {
+            viewModel.onMarkerClick(1L)
+            routeRepository.points.value = emptyList()
+
+            assertThat(expectMostRecentItem().selectedPoint).isNull()
+        }
+    }
+
+    @Test
+    fun resetDismiss_closesDialogAndKeepsRoute() = runTest {
+        routeRepository.points.value = listOf(point(1))
+
+        viewModel.uiState.test {
+            viewModel.onResetClick()
+            viewModel.onResetDismiss()
+
+            val state = expectMostRecentItem()
+            assertThat(state.isResetDialogVisible).isFalse()
+            assertThat(state.points).hasSize(1)
+        }
+    }
+
+    @Test
+    fun resetConfirm_closesOpenSheet() = runTest {
+        routeRepository.points.value = listOf(point(1))
+
+        viewModel.uiState.test {
+            viewModel.onMarkerClick(1L)
+            viewModel.onResetClick()
+            viewModel.onResetConfirm()
+
+            assertThat(expectMostRecentItem().selectedPoint).isNull()
+        }
+    }
+
     private fun point(id: Long) = RoutePoint(
         id = id,
         coordinate = Coordinate(41.0 + id / 1000.0, 29.0),
@@ -173,6 +279,7 @@ private class FakeTrackingRepository : TrackingRepository {
 
 private class FakeAddressRepository : AddressRepository {
     var address: String? = null
+    var pending: CompletableDeferred<String?>? = null
 
-    override suspend fun getAddress(point: RoutePoint): String? = address
+    override suspend fun getAddress(point: RoutePoint): String? = pending?.await() ?: address
 }
