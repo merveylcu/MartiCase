@@ -6,7 +6,7 @@ object ProjectConfig {
     const val TARGET_SDK = 37
     const val JVM_TOOLCHAIN = 17
 
-    val JAVA_VERSION: JavaVersion = JavaVersion.VERSION_11
+    val JAVA_VERSION: JavaVersion = JavaVersion.VERSION_17
 
     const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
 }

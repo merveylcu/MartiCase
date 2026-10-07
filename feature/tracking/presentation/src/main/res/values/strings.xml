@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracking_start">Start tracking</string>
+    <string name="tracking_stop">Stop tracking</string>
+    <string name="tracking_reset">Reset route</string>
+    <string name="tracking_status_active">Tracking</string>
+    <string name="tracking_status_paused">Not tracking</string>
+    <plurals name="tracking_marker_count">
+        <item quantity="one">%d marker</item>
+        <item quantity="other">%d markers</item>
+    </plurals>
+
+    <string name="reset_dialog_title">Reset route?</string>
+    <string name="reset_dialog_message">All markers will be removed. This can\'t be undone.</string>
+    <string name="reset_dialog_confirm">Reset</string>
+    <string name="reset_dialog_dismiss">Cancel</string>
+
+    <string name="point_title">Marker %d</string>
+    <string name="point_address">Address</string>
+    <string name="point_address_unavailable">Address not available</string>
+    <string name="point_recorded_at">Recorded at %s</string>
+
+    <string name="error_start_failed">Tracking could not be started. Please try again.</string>
+    <string name="error_precise_location_required">Precise location permission is required to track your route.</string>
+    <string name="error_location_disabled">Turn on location to start tracking.</string>
+</resources>

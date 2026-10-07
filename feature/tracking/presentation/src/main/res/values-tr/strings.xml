@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracking_start">Takibi başlat</string>
+    <string name="tracking_stop">Takibi durdur</string>
+    <string name="tracking_reset">Rotayı sıfırla</string>
+    <string name="tracking_status_active">Takip ediliyor</string>
+    <string name="tracking_status_paused">Takip kapalı</string>
+    <plurals name="tracking_marker_count">
+        <item quantity="one">%d nokta</item>
+        <item quantity="other">%d nokta</item>
+    </plurals>
+
+    <string name="reset_dialog_title">Rota sıfırlansın mı?</string>
+    <string name="reset_dialog_message">Tüm noktalar silinecek. Bu işlem geri alınamaz.</string>
+    <string name="reset_dialog_confirm">Sıfırla</string>
+    <string name="reset_dialog_dismiss">Vazgeç</string>
+
+    <string name="point_title">%d. nokta</string>
+    <string name="point_address">Adres</string>
+    <string name="point_address_unavailable">Adres bulunamadı</string>
+    <string name="point_recorded_at">Kayıt saati: %s</string>
+
+    <string name="error_start_failed">Takip başlatılamadı. Lütfen tekrar deneyin.</string>
+    <string name="error_precise_location_required">Rotanızı takip edebilmek için hassas konum izni gerekiyor.</string>
+    <string name="error_location_disabled">Takibi başlatmak için konumu açın.</string>
+</resources>

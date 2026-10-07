@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
+import com.merveylcu.marticase.feature.tracking.presentation.TrackingScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -14,6 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MartiCaseTheme {
+                TrackingScreen()
             }
         }
     }

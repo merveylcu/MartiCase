@@ -43,6 +43,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.feature.tracking.data)
     implementation(projects.feature.tracking.domain)
+    implementation(projects.feature.tracking.presentation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
