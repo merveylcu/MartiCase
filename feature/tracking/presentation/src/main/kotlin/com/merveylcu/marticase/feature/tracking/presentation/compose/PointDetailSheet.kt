@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,6 +14,7 @@ import com.merveylcu.marticase.core.designsystem.component.MartiBottomSheet
 import com.merveylcu.marticase.core.designsystem.component.MartiIcon
 import com.merveylcu.marticase.core.designsystem.component.MartiProgressIndicator
 import com.merveylcu.marticase.core.designsystem.component.MartiText
+import com.merveylcu.marticase.core.designsystem.icon.MartiIcons
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 import com.merveylcu.marticase.feature.tracking.presentation.R
 import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
@@ -61,7 +60,7 @@ internal fun PointDetailContent(selected: SelectedPoint, modifier: Modifier = Mo
             horizontalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
             MartiIcon(
-                imageVector = Icons.Filled.LocationOn,
+                imageVector = MartiIcons.Location,
                 contentDescription = null,
                 tint = MartiCaseTheme.colors.primary,
             )

@@ -1,7 +1,7 @@
 package com.merveylcu.marticase.core.designsystem.component
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,13 +16,14 @@ fun MartiIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    FilledTonalIconButton(
+    val colors = MartiCaseTheme.colors
+    IconButton(
         onClick = onClick,
         modifier = modifier.size(MartiCaseTheme.dimens.controlHeight),
         enabled = enabled,
-        colors = IconButtonDefaults.filledTonalIconButtonColors(
-            containerColor = MartiCaseTheme.colors.surface,
-            contentColor = MartiCaseTheme.colors.onSurface,
+        colors = IconButtonDefaults.iconButtonColors(
+            contentColor = colors.onSurfaceVariant,
+            disabledContentColor = colors.outlineVariant,
         ),
     ) {
         MartiIcon(imageVector = icon, contentDescription = contentDescription)

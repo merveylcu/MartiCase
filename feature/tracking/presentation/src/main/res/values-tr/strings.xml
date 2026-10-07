@@ -2,6 +2,8 @@
 <resources>
     <string name="tracking_start">Takibi başlat</string>
     <string name="tracking_stop">Takibi durdur</string>
+    <string name="map_zoom_in">Yakınlaştır</string>
+    <string name="map_zoom_out">Uzaklaştır</string>
     <string name="tracking_reset">Rotayı sıfırla</string>
     <string name="tracking_status_active">Takip ediliyor</string>
     <string name="tracking_status_paused">Takip kapalı</string>

@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.bundles.compose)
-    implementation(libs.androidx.compose.material.icons)
     implementation(libs.bundles.lifecycle)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.collections.immutable)

@@ -126,7 +126,7 @@ internal fun TrackingContent(
             hasLocationPermission = hasLocationPermission,
             contentPadding = PaddingValues(
                 top = systemBars.calculateTopPadding() + controlHeight,
-                bottom = systemBars.calculateBottomPadding() + controlHeight + spacing.lg,
+                bottom = systemBars.calculateBottomPadding() + controlHeight + spacing.xl,
             ),
             onMarkerClick = onMarkerClick,
             modifier = Modifier.fillMaxSize(),

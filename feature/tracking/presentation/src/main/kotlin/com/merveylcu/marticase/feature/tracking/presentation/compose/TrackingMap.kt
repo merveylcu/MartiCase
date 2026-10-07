@@ -1,15 +1,20 @@
 package com.merveylcu.marticase.feature.tracking.presentation.compose
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -22,9 +27,11 @@ import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.merveylcu.marticase.core.designsystem.component.MartiZoomControls
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
+import com.merveylcu.marticase.feature.tracking.presentation.R
 import com.merveylcu.marticase.feature.tracking.presentation.model.RoutePointItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -59,31 +66,42 @@ internal fun TrackingMap(
         }
     }
 
-    GoogleMap(
-        modifier = modifier,
-        cameraPositionState = cameraState,
-        contentPadding = contentPadding,
-        properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
-        uiSettings = MapUiSettings(zoomControlsEnabled = false, mapToolbarEnabled = false),
-    ) {
-        val route = remember(points) { points.map { it.coordinate.toLatLng() } }
-        val items = remember(points) { points.map(::RoutePointItem) }
-        if (route.size > 1) {
-            Polyline(points = route, color = MartiCaseTheme.colors.primary, width = ROUTE_WIDTH)
+    Box(modifier = modifier) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraState,
+            contentPadding = contentPadding,
+            properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
+            uiSettings = MapUiSettings(zoomControlsEnabled = false, mapToolbarEnabled = false),
+        ) {
+            val route = remember(points) { points.map { it.coordinate.toLatLng() } }
+            val items = remember(points) { points.map(::RoutePointItem) }
+            if (route.size > 1) {
+                Polyline(points = route, color = MartiCaseTheme.colors.primary, width = ROUTE_WIDTH)
+            }
+            RouteClustering(
+                items = items,
+                onClusterClick = { position ->
+                    scope.launch {
+                        cameraState.animate(
+                            CameraUpdateFactory.newLatLngZoom(
+                                position,
+                                cameraState.position.zoom + CLUSTER_ZOOM_STEP,
+                            ),
+                        )
+                    }
+                },
+                onItemClick = onMarkerClick,
+            )
         }
-        RouteClustering(
-            items = items,
-            onClusterClick = { position ->
-                scope.launch {
-                    cameraState.animate(
-                        CameraUpdateFactory.newLatLngZoom(
-                            position,
-                            cameraState.position.zoom + CLUSTER_ZOOM_STEP,
-                        ),
-                    )
-                }
-            },
-            onItemClick = onMarkerClick,
+        MartiZoomControls(
+            zoomInDescription = stringResource(R.string.map_zoom_in),
+            zoomOutDescription = stringResource(R.string.map_zoom_out),
+            onZoomIn = { scope.launch { cameraState.animate(CameraUpdateFactory.zoomIn()) } },
+            onZoomOut = { scope.launch { cameraState.animate(CameraUpdateFactory.zoomOut()) } },
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = MartiCaseTheme.spacing.md),
         )
     }
 }

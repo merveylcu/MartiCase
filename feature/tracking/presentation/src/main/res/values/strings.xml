@@ -2,6 +2,8 @@
 <resources>
     <string name="tracking_start">Start tracking</string>
     <string name="tracking_stop">Stop tracking</string>
+    <string name="map_zoom_in">Zoom in</string>
+    <string name="map_zoom_out">Zoom out</string>
     <string name="tracking_reset">Reset route</string>
     <string name="tracking_status_active">Tracking</string>
     <string name="tracking_status_paused">Not tracking</string>
