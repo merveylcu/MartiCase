@@ -1,6 +1,7 @@
 # MartiCase: Claude Context
 
-Android case study for Martı. Brief: [`doc/Android-Marti-Case.pdf`](doc/Android-Marti-Case.pdf).
+Android case study for Martı. The original brief is `doc/Android-Marti-Case.pdf` (local only, gitignored);
+the table below is the source of truth in the repo.
 
 ## The brief in one screen
 
@@ -87,4 +88,5 @@ Take patterns from them; do **not** copy features that the brief doesn't need. K
 ## Commits
 
 Conventional commits: `feat(scope):`, `fix:`, `refactor:`, `build:`, `test:`, `docs:`, `chore:`, `ci:`.
+No AI attribution in commits (no `Co-Authored-By` trailer, no tool names in messages).
 Push to `origin main` after each verified step. GitHub account: `merveylcu`.

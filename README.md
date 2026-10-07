@@ -2,7 +2,7 @@
 
 Android case study for Martı. The app tracks the user's location, drops a marker on the map for every
 100 m of movement, keeps tracking in the background, and shows the address of a marker when it's tapped.
-Brief: [`doc/Android-Marti-Case.pdf`](doc/Android-Marti-Case.pdf).
+The brief is summarized as R1–R9 below.
 
 ## Requirements from the brief
 
