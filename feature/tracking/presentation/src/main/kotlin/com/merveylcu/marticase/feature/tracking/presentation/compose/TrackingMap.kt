@@ -25,6 +25,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
+import com.merveylcu.marticase.feature.tracking.presentation.model.RoutePointItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 

@@ -51,6 +51,8 @@ Take patterns from them; do **not** copy features that the brief doesn't need. K
 - `domain` is pure Kotlin: models, repository interfaces, use cases. No Android imports.
 - `data` implements the repository interfaces. Room, location and geocoder APIs live here only.
 - `presentation` depends on `domain` only. No repository or DAO access from composables.
+- Package layout in `presentation`: screen, `UiState` and ViewModel at the root, UI models in `model/`,
+  composables in `compose/`. No model classes inside `compose/`.
 
 ### MVVM / Compose
 - One immutable `UiState` data class per screen, exposed as `StateFlow`.

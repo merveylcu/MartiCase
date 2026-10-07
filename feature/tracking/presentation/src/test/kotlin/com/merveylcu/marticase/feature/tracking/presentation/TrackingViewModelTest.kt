@@ -15,6 +15,7 @@ import com.merveylcu.marticase.feature.tracking.domain.usecase.ObserveTrackingUs
 import com.merveylcu.marticase.feature.tracking.domain.usecase.ResetRouteUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StartTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StopTrackingUseCase
+import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -8,6 +8,8 @@ import com.merveylcu.marticase.feature.tracking.domain.usecase.ObserveTrackingUs
 import com.merveylcu.marticase.feature.tracking.domain.usecase.ResetRouteUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StartTrackingUseCase
 import com.merveylcu.marticase.feature.tracking.domain.usecase.StopTrackingUseCase
+import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
+import com.merveylcu.marticase.feature.tracking.presentation.model.SelectedPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job

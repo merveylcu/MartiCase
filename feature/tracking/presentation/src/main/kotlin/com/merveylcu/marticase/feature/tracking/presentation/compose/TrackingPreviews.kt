@@ -8,8 +8,8 @@ import com.merveylcu.marticase.core.designsystem.component.MartiSurface
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
 import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.RoutePoint
-import com.merveylcu.marticase.feature.tracking.presentation.AddressState
-import com.merveylcu.marticase.feature.tracking.presentation.SelectedPoint
+import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
+import com.merveylcu.marticase.feature.tracking.presentation.model.SelectedPoint
 
 private val PreviewPoint = RoutePoint(
     id = 3L,

@@ -17,9 +17,9 @@ import com.merveylcu.marticase.core.designsystem.component.MartiIcon
 import com.merveylcu.marticase.core.designsystem.component.MartiProgressIndicator
 import com.merveylcu.marticase.core.designsystem.component.MartiText
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
-import com.merveylcu.marticase.feature.tracking.presentation.AddressState
 import com.merveylcu.marticase.feature.tracking.presentation.R
-import com.merveylcu.marticase.feature.tracking.presentation.SelectedPoint
+import com.merveylcu.marticase.feature.tracking.presentation.model.AddressState
+import com.merveylcu.marticase.feature.tracking.presentation.model.SelectedPoint
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale

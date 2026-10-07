@@ -1,4 +1,4 @@
-package com.merveylcu.marticase.feature.tracking.presentation.compose
+package com.merveylcu.marticase.feature.tracking.presentation.model
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
