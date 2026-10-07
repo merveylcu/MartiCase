@@ -51,6 +51,22 @@ class RoutePointDaoTest {
     }
 
     @Test
+    fun observeAll_emitsPointsInInsertOrder() = runTest {
+        dao.insert(point(latitude = 41.0))
+        dao.insert(point(latitude = 41.1))
+        dao.insert(point(latitude = 41.2))
+
+        assertThat(dao.observeAll().first().map { it.latitude })
+            .containsExactly(41.0, 41.1, 41.2)
+            .inOrder()
+    }
+
+    @Test
+    fun getLast_onEmptyRoute_isNull() = runTest {
+        assertThat(dao.getLast()).isNull()
+    }
+
+    @Test
     fun deleteAll_clearsRoute() = runTest {
         dao.insert(point(latitude = 41.0))
         dao.insert(point(latitude = 41.1))
