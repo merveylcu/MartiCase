@@ -2,6 +2,6 @@
 <resources>
     <string name="tracking_notification_channel">Route tracking</string>
     <string name="tracking_notification_title">Tracking your route</string>
-    <string name="tracking_notification_text">A marker is added every 100 m.</string>
+    <string name="tracking_notification_text">A marker is added every %d m.</string>
     <string name="tracking_notification_stop">Stop</string>
 </resources>

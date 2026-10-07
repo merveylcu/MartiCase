@@ -8,6 +8,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.merveylcu.marticase.feature.tracking.data.R
+import com.merveylcu.marticase.feature.tracking.domain.usecase.RecordLocationUseCase
 
 internal const val TRACKING_NOTIFICATION_ID = 1001
 private const val CHANNEL_ID = "route_tracking"
@@ -36,7 +37,12 @@ internal fun Context.createTrackingNotification(): Notification {
         .Builder(this, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_tracking_notification)
         .setContentTitle(getString(R.string.tracking_notification_title))
-        .setContentText(getString(R.string.tracking_notification_text))
+        .setContentText(
+            getString(
+                R.string.tracking_notification_text,
+                RecordLocationUseCase.MARKER_DISTANCE_METERS.toInt(),
+            ),
+        )
         .setContentIntent(openApp)
         .addAction(0, getString(R.string.tracking_notification_stop), stop)
         .setOngoing(true)
