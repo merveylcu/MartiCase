@@ -39,7 +39,6 @@ configure<ApplicationExtension> {
 }
 
 dependencies {
-    implementation(projects.core.common)
     implementation(projects.core.designsystem)
     implementation(projects.feature.tracking.data)
     implementation(projects.feature.tracking.domain)

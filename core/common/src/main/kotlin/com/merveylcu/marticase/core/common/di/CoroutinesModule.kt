@@ -1,4 +1,4 @@
-package com.merveylcu.marticase.di
+package com.merveylcu.marticase.core.common.di
 
 import com.merveylcu.marticase.core.common.dispatcher.ApplicationScope
 import com.merveylcu.marticase.core.common.dispatcher.DefaultDispatcher
@@ -15,19 +15,19 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CoroutinesModule {
+public object CoroutinesModule {
     @Provides
     @IoDispatcher
-    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    public fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     @DefaultDispatcher
-    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    public fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides
     @Singleton
     @ApplicationScope
-    fun provideApplicationScope(
+    public fun provideApplicationScope(
         @DefaultDispatcher dispatcher: CoroutineDispatcher,
     ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 }

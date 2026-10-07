@@ -18,7 +18,7 @@ Option 1.
 ```
 :app                            Application, MainActivity, manifest wiring
 :build-logic                    marticase.* convention plugins
-:core:common                    dispatcher qualifiers, Result/error types
+:core:common                    dispatcher and app scope qualifiers + their Hilt bindings (ADR 0008)
 :core:designsystem              theme, Marti* components
 :core:database                  Room: route points
 :core:datastore                 DataStore: tracking state (ADR 0006)

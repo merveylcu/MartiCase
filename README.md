@@ -58,8 +58,8 @@ tracks and stores the route, but the map tiles stay blank.
 ## Modules
 
 ```
-:app                            Application, MainActivity, coroutine DI
-:core:common                    dispatcher and app scope qualifiers
+:app                            Application, MainActivity
+:core:common                    dispatcher and app scope qualifiers with their Hilt bindings
 :core:designsystem              MartiCaseTheme tokens, Marti* components
 :core:permission                permission checks, location tracking permission flow
 :core:database                  Room: route_points
