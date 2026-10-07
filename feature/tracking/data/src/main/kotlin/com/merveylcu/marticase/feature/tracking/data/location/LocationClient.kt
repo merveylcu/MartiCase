@@ -11,7 +11,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.merveylcu.marticase.feature.tracking.domain.model.Coordinate
 import com.merveylcu.marticase.feature.tracking.domain.model.LocationFix
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
@@ -21,8 +20,6 @@ import javax.inject.Inject
 
 private const val INTERVAL_MILLIS = 10_000L
 private const val MIN_INTERVAL_MILLIS = 5_000L
-
-private const val MAX_FIX_AGE_NANOS = 30_000_000_000L
 
 private const val MIN_DISTANCE_METERS = 20f
 
@@ -47,20 +44,8 @@ internal class LocationClient @Inject constructor(
             override fun onLocationResult(result: LocationResult) {
                 val now = SystemClock.elapsedRealtimeNanos()
                 result.locations
-                    .filter { now - it.elapsedRealtimeNanos <= MAX_FIX_AGE_NANOS }
-                    .forEach { location ->
-                        trySend(
-                            LocationFix(
-                                coordinate = Coordinate(location.latitude, location.longitude),
-                                accuracyMeters = if (location.hasAccuracy()) {
-                                    location.accuracy
-                                } else {
-                                    Float.MAX_VALUE
-                                },
-                                timeMillis = location.time,
-                            ),
-                        )
-                    }
+                    .mapNotNull { it.toLocationFixOrNull(now) }
+                    .forEach { trySend(it) }
             }
         }
 

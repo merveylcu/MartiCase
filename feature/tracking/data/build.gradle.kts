@@ -3,6 +3,7 @@ import com.android.build.api.dsl.LibraryExtension
 plugins {
     alias(libs.plugins.marticase.android.library)
     alias(libs.plugins.marticase.android.hilt)
+    alias(libs.plugins.marticase.android.robolectric)
     alias(libs.plugins.marticase.testing)
 }
 
