@@ -32,14 +32,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.merveylcu.marticase.core.designsystem.component.MartiSnackbarHost
 import com.merveylcu.marticase.core.designsystem.theme.MartiCaseTheme
+import com.merveylcu.marticase.core.permission.PermissionBlocker
+import com.merveylcu.marticase.core.permission.hasFineLocationPermission
+import com.merveylcu.marticase.core.permission.rememberLocationTrackingPermissionFlow
 import com.merveylcu.marticase.feature.tracking.presentation.compose.PointDetailSheet
 import com.merveylcu.marticase.feature.tracking.presentation.compose.ResetRouteDialog
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingControls
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingMap
 import com.merveylcu.marticase.feature.tracking.presentation.compose.TrackingStatusChip
-import com.merveylcu.marticase.feature.tracking.presentation.permission.StartBlocker
-import com.merveylcu.marticase.feature.tracking.presentation.permission.hasFineLocationPermission
-import com.merveylcu.marticase.feature.tracking.presentation.permission.rememberStartTrackingFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -55,15 +55,15 @@ fun TrackingScreen(modifier: Modifier = Modifier, viewModel: TrackingViewModel =
     val preciseLocationMessage = stringResource(R.string.error_precise_location_required)
     val locationDisabledMessage = stringResource(R.string.error_location_disabled)
 
-    val startTrackingFlow = rememberStartTrackingFlow(
+    val startTrackingFlow = rememberLocationTrackingPermissionFlow(
         onReady = {
             hasLocationPermission = true
             viewModel.onStartTracking()
         },
         onBlock = { blocker ->
             val message = when (blocker) {
-                StartBlocker.PreciseLocationDenied -> preciseLocationMessage
-                StartBlocker.LocationDisabled -> locationDisabledMessage
+                PermissionBlocker.PreciseLocationDenied -> preciseLocationMessage
+                PermissionBlocker.LocationDisabled -> locationDisabledMessage
             }
             scope.launch { snackbarHostState.showSnackbar(message) }
         },

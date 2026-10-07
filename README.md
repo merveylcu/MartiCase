@@ -61,12 +61,13 @@ tracks and stores the route, but the map tiles stay blank.
 :app                            Application, MainActivity, coroutine DI
 :core:common                    dispatcher and app scope qualifiers
 :core:designsystem              MartiCaseTheme tokens, Marti* components
+:core:permission                permission checks, location tracking permission flow
 :core:database                  Room: route_points
 :core:datastore                 tracking flag
 :core:testing                   MainDispatcherRule
 :feature:tracking:domain        models, repository interfaces, use cases (pure Kotlin)
 :feature:tracking:data          repositories, fused location, geocoder, TrackingService
-:feature:tracking:presentation  map screen, ViewModel, permission flow
+:feature:tracking:presentation  map screen, ViewModel
 ```
 
 Shared Gradle setup lives in `build-logic` as `marticase.*` convention plugins; versions are in

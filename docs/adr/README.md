@@ -11,3 +11,4 @@ proposed by the `android-architect` agent and recorded with the `adr` skill.
 | [0004](0004-background-tracking-strategy.md) | Location foreground service + battery optimization exemption | Accepted |
 | [0005](0005-marker-distance-rule.md) | 100 m measured from the last marker, accuracy filtered | Accepted |
 | [0006](0006-route-persistence.md) | Room for route points, DataStore for tracking state | Accepted |
+| [0007](0007-core-permission-module.md) | Permission checks and request flow in core:permission | Accepted |

@@ -22,6 +22,7 @@ Option 1.
 :core:designsystem              theme, Marti* components
 :core:database                  Room: route points
 :core:datastore                 DataStore: tracking state (ADR 0006)
+:core:permission                permission checks and request flow (ADR 0007)
 :core:testing                   test helpers, MainDispatcherRule
 :feature:tracking:domain        RoutePoint model, repository interfaces, use cases (pure Kotlin)
 :feature:tracking:data          repositories, Fused Location, Geocoder, foreground service

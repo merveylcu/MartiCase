@@ -1,4 +1,4 @@
-package com.merveylcu.marticase.feature.tracking.presentation.permission
+package com.merveylcu.marticase.core.permission
 
 import android.Manifest
 import android.os.Build
@@ -20,22 +20,22 @@ private typealias Step = () -> Unit
  * Returns a function that starts the chain.
  */
 @Composable
-internal fun rememberStartTrackingFlow(
+fun rememberLocationTrackingPermissionFlow(
     onReady: () -> Unit,
-    onBlock: (StartBlocker) -> Unit,
+    onBlock: (PermissionBlocker) -> Unit,
 ): Step {
     val currentOnReady by rememberUpdatedState(onReady)
     val currentOnBlock by rememberUpdatedState(onBlock)
 
     val locationSettings = rememberLocationSettingsStep(
         onEnable = { currentOnReady() },
-        onDisable = { currentOnBlock(StartBlocker.LocationDisabled) },
+        onDisable = { currentOnBlock(PermissionBlocker.LocationDisabled) },
     )
     val battery = rememberBatteryStep(next = locationSettings)
     val notifications = rememberNotificationStep(next = battery)
     return rememberLocationPermissionStep(
         next = notifications,
-        onDeny = { currentOnBlock(StartBlocker.PreciseLocationDenied) },
+        onDeny = { currentOnBlock(PermissionBlocker.PreciseLocationDenied) },
     )
 }
 
